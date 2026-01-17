@@ -54,6 +54,7 @@ const PORT = process.env.PORT || 3000;
 // Seed admin user and start server
 seedAdminUser().then(() => {
   app.listen(PORT, () => {
+    
     console.log(`Server is running on port ${PORT}`);
     console.log(`API Documentation: http://localhost:${PORT}/api/health`);
   });
