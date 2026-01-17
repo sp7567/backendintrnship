@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Vendor {
+  id            String   @id @default(uuid())
+  vendorName    String   @unique
+  contactPerson String?
+  email         String   @unique
+  phoneNumber   String?
+  paymentTerms  String   @default("DAYS_30")
+  status        String   @default("Active")
+  isDeleted     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  createdBy     String?
+  updatedBy     String?
+
+  purchaseOrders PurchaseOrder[]
+
+  @@map("vendors")
+}
+
+model PurchaseOrder {
+  id          String   @id @default(uuid())
+  poNumber    String   @unique
+  vendorId    String
+  poDate      DateTime @default(now())
+  totalAmount Decimal
+  dueDate     DateTime
+  status      String   @default("Draft")
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   String?
+  updatedBy   String?
+
+  vendor   Vendor    @relation(fields: [vendorId], references: [id])
+  items    POItem[]
+  payments Payment[]
+
+  @@map("purchase_orders")
+}
+
+model POItem {
+  id              String   @id @default(uuid())
+  purchaseOrderId String
+  description     String
+  quantity        Int
+  unitPrice       Decimal
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  purchaseOrder PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+
+  @@map("po_items")
+}
+
+model Payment {
+  id              String   @id @default(uuid())
+  referenceNumber String   @unique
+  purchaseOrderId String
+  paymentDate     DateTime @default(now())
+  amountPaid      Decimal
+  paymentMethod   String
+  notes           String?
+  isVoided        Boolean  @default(false)
+  isDeleted       Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  createdBy       String?
+  updatedBy       String?
+
+  purchaseOrder PurchaseOrder @relation(fields: [purchaseOrderId], references: [id])
+
+  @@map("payments")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
