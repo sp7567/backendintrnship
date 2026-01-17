@@ -12,6 +12,9 @@ const analyticsRoutes = require('./routes/analytics.routes');
 // Import middleware
 const errorHandler = require('./middleware/errorHandler');
 
+// Import database and seed function
+const { seedAdminUser } = require('./config/database');
+
 const app = express();
 
 // CORS configuration for production
@@ -48,9 +51,12 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  console.log(`API Documentation: http://localhost:${PORT}/api/health`);
+// Seed admin user and start server
+seedAdminUser().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+    console.log(`API Documentation: http://localhost:${PORT}/api/health`);
+  });
 });
 
 module.exports = app;
