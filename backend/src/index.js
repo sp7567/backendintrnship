@@ -36,7 +36,18 @@ app.use('/api/purchase-orders', purchaseOrderRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/analytics', analyticsRoutes);
 
-// Health check endpoint
+// Health check endpoints
+app.get('/health', async (req, res) => {
+  try {
+    const { prisma } = require('./config/database');
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ status: 'ok', db: 'connected' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ status: 'error', db: 'not connected' });
+  }
+});
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'MSME Vendor Payment API is running' });
 });
@@ -54,7 +65,7 @@ const PORT = process.env.PORT || 3000;
 // Seed admin user and start server
 seedAdminUser().then(() => {
   app.listen(PORT, () => {
-    
+
     console.log(`Server is running on port ${PORT}`);
     console.log(`API Documentation: http://localhost:${PORT}/api/health`);
   });
