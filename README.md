@@ -314,6 +314,83 @@ The API returns appropriate HTTP status codes:
 - **409** - Conflict (duplicate)
 - **500** - Server error
 
+## 🚀 Deployment Guide
+
+### Deploy Backend to Railway (Recommended)
+
+1. **Create Railway Account**: Go to [railway.app](https://railway.app) and sign up with GitHub
+
+2. **Create New Project**: 
+   - Click "New Project" → "Deploy from GitHub repo"
+   - Select your repository
+   - Choose the `backend` folder as the root directory
+
+3. **Add Environment Variables**:
+   ```
+   DATABASE_URL=your-postgresql-connection-string
+   JWT_SECRET=your-production-secret-key
+   NODE_ENV=production
+   PORT=3000
+   ```
+
+4. **Add PostgreSQL**: 
+   - Click "New" → "Database" → "Add PostgreSQL"
+   - Railway will automatically set `DATABASE_URL`
+
+5. **Deploy**: Railway will automatically deploy your backend
+
+### Deploy Frontend to Vercel
+
+1. **Create Vercel Account**: Go to [vercel.com](https://vercel.com) and sign up with GitHub
+
+2. **Import Project**:
+   - Click "Add New" → "Project"
+   - Import your GitHub repository
+   - Set "Root Directory" to `frontend`
+
+3. **Configure Build Settings**:
+   - Framework Preset: `Create React App`
+   - Build Command: `npm run build`
+   - Output Directory: `build`
+
+4. **Add Environment Variable**:
+   ```
+   REACT_APP_API_URL=https://your-railway-backend-url.railway.app/api
+   ```
+
+5. **Deploy**: Click "Deploy" and Vercel will build and deploy your frontend
+
+### Alternative: Deploy to Render
+
+#### Backend:
+1. Go to [render.com](https://render.com) and create account
+2. Create "New Web Service" → Connect your GitHub repo
+3. Set Root Directory: `backend`
+4. Build Command: `npm install && npx prisma generate`
+5. Start Command: `node src/index.js`
+6. Add PostgreSQL database and environment variables
+
+#### Frontend:
+1. Create "New Static Site" → Connect repo
+2. Set Root Directory: `frontend`
+3. Build Command: `npm install && npm run build`
+4. Publish Directory: `build`
+
+### Environment Variables Summary
+
+**Backend (.env)**:
+```env
+DATABASE_URL=postgresql://user:password@host:5432/dbname
+JWT_SECRET=your-super-secret-production-key
+NODE_ENV=production
+PORT=3000
+```
+
+**Frontend (.env)**:
+```env
+REACT_APP_API_URL=https://your-backend-url/api
+```
+
 ## License
 
 MIT
