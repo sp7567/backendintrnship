@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'https://backendintrnship.onrender.com/api';
+const API_URL = process.env.REACT_APP_API_URL || 'https://backendintrnship-1.onrender.com/api';
 
 const api = axios.create({
   baseURL: API_URL,
